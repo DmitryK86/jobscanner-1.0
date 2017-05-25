@@ -9,10 +9,11 @@ import java.util.LinkedHashSet;
 public class FileToSave implements Serializable {
 
     public LinkedHashSet<String> set;
+    private File file = new File("temp.out");
 
     public void save(){
         try {
-            FileOutputStream fos = new FileOutputStream("temp.out");
+            FileOutputStream fos = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             try {
                 oos.writeObject(this.set);
@@ -25,9 +26,25 @@ public class FileToSave implements Serializable {
         }
 
     }
-    public FileToSave(){
+    public FileToSave() {
+        if (!file.exists()) {
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                ObjectOutputStream oos = new ObjectOutputStream(fos);
+                LinkedHashSet<String> st = new LinkedHashSet<>();
+                st.add(" ");
+                try {
+                    oos.writeObject(st);
+                } finally {
+                    oos.flush();
+                    oos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         try {
-            FileInputStream fis = new FileInputStream("temp.out");
+            FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
             try {
                 this.set = (LinkedHashSet<String>) ois.readObject();
