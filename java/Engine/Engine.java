@@ -34,9 +34,5 @@ public class Engine {
         ParserWorkUA parser = new ParserWorkUA();
         mainFrame = new MainFrame(parser.parse(text));
         mainFrame.init();
-
-//        Loop loop = new Loop();
-//        loop.start();
-
     }
 }
