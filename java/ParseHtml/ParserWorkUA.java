@@ -17,7 +17,7 @@ public class ParserWorkUA implements IParser {
         LinkedHashMap<String, String> list = new LinkedHashMap<String, String>();
         ArrayList<String> arr = new ArrayList<>();
 
-        Pattern pattern = Pattern.compile("(/jobs/)[0-9]+\\W+(title=)\\W[\\w\\s,\\.А-яа-яІіЇї0-9-#\\(\\)/]+");
+        Pattern pattern = Pattern.compile("(/jobs/)[0-9]+\\W+(title=)\\W[\\w\\s,\\.А-яа-яІіЇїє0-9-#\\(\\)/+]+");
         Matcher matcher = pattern.matcher(html);
 
         while (matcher.find()){
@@ -26,7 +26,7 @@ public class ParserWorkUA implements IParser {
 
         for (String s : arr) {
             Pattern p1 = Pattern.compile("(/jobs/)[0-9]+");
-            Pattern p2 = Pattern.compile("(title=)\\W[\\w\\s,\\.А-яа-яІіЇї0-9-#\\(\\)/]+");
+            Pattern p2 = Pattern.compile("(title=)\\W[\\w\\s,\\.А-яа-яІіЇїє0-9-#\\(\\)/+]+");
             Matcher m1 = p1.matcher(s);
             Matcher m2 = p2.matcher(s);
             while (m1.find()&&m2.find()){
