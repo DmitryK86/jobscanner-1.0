@@ -48,7 +48,7 @@ public class Panel extends JPanel{
             this.add(labelsURI.get(i), new GridBagConstraints(1, i,1,1,1,1,GridBagConstraints.WEST,GridBagConstraints.NONE, new Insets(1,1,1,1), 0,0));
         }
     }
-    public synchronized void refresh(LinkedHashMap<String, String> linkedHashMap){
+    public void refresh(LinkedHashMap<String, String> linkedHashMap){
         if (linkedHashMap.size() > labelsTitle.size()){
             int p = linkedHashMap.size() - labelsTitle.size();
             for (int i = 0; i < p; i++) {
@@ -59,24 +59,24 @@ public class Panel extends JPanel{
             }
         }
         Iterator<String> it = linkedHashMap.values().iterator();
+        ArrayList<String> list = getTextFromLabels(labelsTitle);
+        ArrayList<String> newList = new ArrayList<>();
         int n = 0;
-        while (it.hasNext()){
-            String newString = it.next();
-            if (!compareTitle(labelsTitle, newString)){
-                ArrayList<String> text = new ArrayList<>();
-                for (int i = 0; i < labelsTitle.size()-1; i++) {
-                    text.add(labelsTitle.get(i).getText());
-                }
-                labelsTitle.get(n).setText("New!");
-                labelsTitle.get(n).setForeground(Color.red);
-                labelsTitle.get(n).addMouseListener(new RefMouseListener(n, newString));
-                for (int i = 0; i < text.size(); i++) {
-                    labelsTitle.get(i+1).setText(text.get(i));
-                }
-
+        while (it.hasNext()) {
+            String str = it.next();
+            if (!list.contains((String) str)){
+                newList.add(str);
+                n++;
             }
-            n++;
         }
+        if (n > 0) {
+            newList.addAll(list.subList(0, list.size() - n));
+            setTextToLabels(newList);
+            for (int i = 0; i < n; i++) {
+                labelsTitle.get(i).setForeground(Color.magenta);
+            }
+        }
+
         it = linkedHashMap.keySet().iterator();
         int p = 0;
         while (it.hasNext()){
@@ -116,27 +116,31 @@ public class Panel extends JPanel{
         }
     }
     class RefMouseListener extends MouseAdapter {
-        private int n;
-        private String text;
+        int label;
 
-        public RefMouseListener(int n, String text) {
-            this.n = n;
-            this.text = text;
+        public RefMouseListener(int label) {
+            this.label = label;
         }
-
         @Override
         public void mouseEntered(MouseEvent e) {
-            labelsTitle.get(n).setText(text);
-            labelsTitle.get(n).setForeground(Color.black);
+            if (labelsTitle.get(label).getForeground() != Color.black){
+                labelsTitle.get(label).setForeground(Color.black);
+            }
         }
     }
 
-    private boolean compareTitle(ArrayList<JLabel> list, String text){
+    private ArrayList<String> getTextFromLabels(ArrayList<JLabel> list){
+        ArrayList<String> text = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getText().equalsIgnoreCase(text))
-                return true;
+            text.add(list.get(i).getText());
         }
-        return false;
+        return text;
+    }
+    private void setTextToLabels(ArrayList<String> list){
+        for (int i = 0; i < labelsTitle.size(); i++) {
+            labelsTitle.get(i).setText(list.get(i));
+            labelsTitle.get(i).addMouseListener(new RefMouseListener(i));
+        }
     }
     private boolean compareURL(LinkedHashSet<String> set, String text){
         Iterator<String> it = set.iterator();
@@ -147,3 +151,4 @@ public class Panel extends JPanel{
         return false;
     }
 }
+
