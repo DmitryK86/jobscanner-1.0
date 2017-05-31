@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
  */
 public class VerifyOutList {
     public LinkedHashMap<String, String> verify(LinkedHashMap<String, String> list, String keyWords) {
+        if (keyWords.isEmpty()){
+            return list;
+        } else {
         String[] words = keyWords.split(" ");
         StringBuilder sb = new StringBuilder("[\\w\\s\\W\\S]*");
         for (int i = 0; i < words.length; i++) {
@@ -40,5 +43,6 @@ public class VerifyOutList {
         }
 
         return list;
+    }
     }
 }
